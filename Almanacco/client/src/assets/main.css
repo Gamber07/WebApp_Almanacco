@@ -1,0 +1,262 @@
+/* ===== Dark Mode Foundation ===== */
+:root {
+  --color-primary: #7c3aed;
+  --color-secondary: #06b6d4;
+  --color-accent: #a855f7;
+  --bg-dark-1: #0f172a;
+  --bg-dark-2: #1a1f35;
+  --bg-dark-3: #1f2937;
+  --glass-blur: rgba(15, 23, 42, 0.7);
+  --glow-purple: rgba(124, 58, 237, 0.4);
+  --glow-cyan: rgba(6, 182, 212, 0.3);
+}
+
+html, body, #app {
+  height: 100%;
+}
+
+html {
+  background: linear-gradient(135deg, #0f172a 0%, #1a1f35 50%, #0f172a 100%);
+  background-attachment: fixed;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: transparent;
+  color: #e2e8f0;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+*::selection {
+  background-color: var(--color-primary);
+  color: #f0f9ff;
+}
+
+/* ===== Scrollbar Styling ===== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-dark-1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border-radius: 5px;
+  border: 2px solid var(--bg-dark-1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
+}
+
+/* ===== Bento Grid Layout ===== */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.bento-grid.wide {
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+}
+
+@media (min-width: 960px) {
+  .bento-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+  
+  .bento-item-large {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .bento-item-large {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+}
+
+/* ===== Glassmorphism Cards ===== */
+.card-glass {
+  background: rgba(30, 41, 59, 0.6) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(148, 163, 184, 0.12) !important;
+  border-radius: 16px !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.05),
+    0 10px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+.card-glass:hover {
+  border-color: rgba(148, 163, 184, 0.25) !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+    0 20px 50px rgba(0, 0, 0, 0.4),
+    0 0 30px var(--glow-purple) !important;
+}
+
+/* ===== Glow Effects ===== */
+.glow-purple {
+  position: relative;
+}
+
+.glow-purple::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 50% 0%, var(--glow-purple), transparent 70%);
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.glow-purple:hover::before {
+  opacity: 1;
+}
+
+.glow-cyan {
+  position: relative;
+}
+
+.glow-cyan::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 50% 100%, var(--glow-cyan), transparent 70%);
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.glow-cyan:hover::before {
+  opacity: 1;
+}
+
+/* ===== Gradient Text ===== */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+}
+
+.gradient-text-accent {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+}
+
+/* ===== Button Styling ===== */
+.btn-premium {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent)) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3) !important;
+}
+
+.btn-premium:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.5) !important;
+}
+
+.btn-premium:active {
+  transform: translateY(0) !important;
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--color-secondary), #0891b2) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3) !important;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 30px rgba(6, 182, 212, 0.5) !important;
+}
+
+/* ===== Text Field Styling ===== */
+.v-input__control {
+  background: rgba(30, 41, 59, 0.4) !important;
+  border-radius: 8px !important;
+}
+
+/* ===== Divider ===== */
+.v-divider {
+  border-color: rgba(148, 163, 184, 0.1) !important;
+}
+
+/* ===== Link Styling ===== */
+a {
+  text-decoration: none;
+  color: var(--color-secondary);
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: var(--color-primary);
+}
+
+/* ===== Animation ===== */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 
+      inset 0 1px 1px rgba(255, 255, 255, 0.08),
+      0 20px 50px rgba(0, 0, 0, 0.4),
+      0 0 30px var(--glow-purple);
+  }
+  50% {
+    box-shadow: 
+      inset 0 1px 1px rgba(255, 255, 255, 0.08),
+      0 20px 50px rgba(0, 0, 0, 0.4),
+      0 0 60px var(--glow-purple);
+  }
+}
+
+.glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
