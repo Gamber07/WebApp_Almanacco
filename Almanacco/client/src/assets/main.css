@@ -260,3 +260,69 @@ a:hover {
 .glow-pulse {
   animation: glow-pulse 2s ease-in-out infinite;
 }
+
+/* ===== Responsive Helpers ===== */
+.data-table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table table {
+  width: 100%;
+  min-width: 720px;
+}
+
+.view-header {
+  gap: 1rem;
+}
+
+.header-actions {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 960px) {
+  .card-glass {
+    border-radius: 14px !important;
+  }
+
+  .view-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header-actions {
+    width: 100%;
+    min-width: 0 !important;
+    flex-direction: column;
+  }
+
+  .header-actions > * {
+    width: 100%;
+  }
+
+  .data-table table {
+    min-width: 640px;
+  }
+}
+
+@media (max-width: 600px) {
+  .card-glass {
+    border-radius: 12px !important;
+  }
+
+  .bento-grid,
+  .bento-grid.wide {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .data-table table {
+    min-width: 560px;
+  }
+
+  .v-btn {
+    letter-spacing: 0.2px;
+  }
+}

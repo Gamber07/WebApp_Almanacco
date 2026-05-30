@@ -6,6 +6,7 @@ import ContrattiView from '../views/ContrattiView.vue'
 import PartiteView from '../views/PartiteView.vue'
 import ClassificaView from '../views/ClassificaView.vue'
 import StagioniView from '../views/StagioniView.vue'
+import { useAuthStore } from '../stores/auth'
 
 const routes = [
   // Rotte pubbliche: pagine consultabili senza permessi amministrativi.
@@ -25,12 +26,13 @@ const routes = [
   { path: '/admin/gestione-squadre', component: () => import('../views/admin/GestioneSquadreAdmin.vue'), meta: { requiresAdmin: true } },
   { path: '/admin/gestione-stagioni', component: () => import('../views/admin/GestioneStagioniAdmin.vue'), meta: { requiresAdmin: true } },
   { path: '/admin/gestione-mercato', component: () => import('../views/admin/GestioneMercatoAdmin.vue'), meta: { requiresAdmin: true } },
+  { path: '/admin/gestione-campionati', component: () => import('../views/admin/GestioneCampionatiAdmin.vue'), meta: { requiresAdmin: true } },
 
   // Rotte legacy: mantenute per compatibilità con vecchi link e redirect.
   { path: '/classifica', redirect: '/classifiche' },
   { path: '/partite', redirect: '/calendario' },
-  { path: '/stagioni', component: StagioniView },
-  { path: '/contratti', component: ContrattiView },
+  { path: '/stagioni', component: StagioniView, meta: { requiresAdmin: true } },
+  { path: '/contratti', component: ContrattiView, meta: { requiresAdmin: true } },
 ]
 
 const router = createRouter({
@@ -39,21 +41,13 @@ const router = createRouter({
 })
 
 // Guard globale: blocca l'accesso admin a chi non ha il ruolo corretto.
-router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAdmin) {
-    // Check if user is admin
-    const { useAuthStore } = require('../stores/auth')
-    const auth = useAuthStore()
-    
-    if (auth.user?.ruolo === 'admin') {
-      next()
-    } else {
-      // Redirect to home if not admin
-      next('/')
-    }
-  } else {
-    next()
+router.beforeEach((to) => {
+  if (!to.meta.requiresAdmin) {
+    return true
   }
+
+  const auth = useAuthStore()
+  return auth.user?.ruolo === 'admin' ? true : '/'
 })
 
 export default router

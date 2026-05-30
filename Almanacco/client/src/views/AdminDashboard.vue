@@ -2,6 +2,44 @@
   <div>
     <!-- Dashboard di amministrazione: ingresso rapido ai moduli CRUD. -->
     <h1>Dashboard Amministrazione</h1>
+    <v-row class="mb-4">
+      <v-col cols="12" md="4">
+        <v-card>
+          <v-card-title>Stagioni</v-card-title>
+          <v-card-text>Consultazione rapida delle stagioni storiche</v-card-text>
+          <v-card-actions>
+            <v-btn to="/stagioni" color="primary">Apri</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-card>
+          <v-card-title>Contratti</v-card-title>
+          <v-card-text>Elenco completo dei contratti e degli ingaggi</v-card-text>
+          <v-card-actions>
+            <v-btn to="/contratti" color="primary">Apri</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-card>
+          <v-card-title>Campionati</v-card-title>
+          <v-card-text>Gestisci i campionati disponibili</v-card-text>
+          <v-card-actions>
+            <v-btn to="/admin/gestione-campionati" color="primary">Apri</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-card>
+          <v-card-title>Dashboard</v-card-title>
+          <v-card-text>Accesso rapido ai moduli amministrativi</v-card-text>
+          <v-card-actions>
+            <v-btn to="/admin" color="primary">Apri</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col cols="12" md="6">
         <v-card>

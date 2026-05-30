@@ -22,10 +22,57 @@ Flight::route('GET /campionati', function () {
 
 Flight::route('GET /classifica', function () {
     $stagioni = get_stagioni();
-    $campionati = get_campionati();
+    $allCampionati = get_campionati(true);
 
     $idStagione = (int) (Flight::request()->query->id_stagione ?? ($stagioni[0]['id'] ?? 0));
+    $stagioneSelezionata = null;
+    foreach ($stagioni as $stagione) {
+        if ((int) $stagione['id'] === $idStagione) {
+            $stagioneSelezionata = $stagione;
+            break;
+        }
+    }
+
+    if ($stagioneSelezionata === null) {
+        $stagioneSelezionata = $stagioni[0] ?? null;
+        $idStagione = (int) ($stagioneSelezionata['id'] ?? 0);
+    }
+
+    $annoInizio = (int) ($stagioneSelezionata['anno_inizio'] ?? 0);
+
+    $campionati = array_values(array_filter($allCampionati, static function (array $campionato) use ($annoInizio): bool {
+        $eliminatoIl = $campionato['eliminato_il'] ?? null;
+        if ($eliminatoIl === null) {
+            return true;
+        }
+
+        return (int) date('Y', strtotime((string) $eliminatoIl)) > $annoInizio;
+    }));
+
     $idCampionato = (int) (Flight::request()->query->id_campionato ?? ($campionati[0]['id'] ?? 0));
+
+    if ($idCampionato > 0) {
+        $campionatoSelezionato = null;
+        foreach ($campionati as $campionato) {
+            if ((int) $campionato['id'] === $idCampionato) {
+                $campionatoSelezionato = $campionato;
+                break;
+            }
+        }
+
+        if ($campionatoSelezionato === null) {
+            $campionatoStorico = get_campionato($idCampionato);
+            if ($campionatoStorico !== null) {
+                $campionatoEliminatoIl = $campionatoStorico['eliminato_il'] ?? null;
+                $campionatoValidoPerStagione = $campionatoEliminatoIl === null
+                    || (int) date('Y', strtotime((string) $campionatoEliminatoIl)) > $annoInizio;
+
+                if ($campionatoValidoPerStagione) {
+                    $campionati[] = $campionatoStorico;
+                }
+            }
+        }
+    }
 
     if ($idStagione <= 0 || $idCampionato <= 0) {
         Flight::jsonHalt([

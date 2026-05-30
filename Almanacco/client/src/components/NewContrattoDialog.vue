@@ -10,8 +10,26 @@
     <v-card>
       <v-card-title>{{ isEditMode ? 'Modifica Contratto' : 'Nuovo Contratto' }}</v-card-title>
       <v-card-text>
-        <v-text-field v-model.number="id_giocatore" label="Id Giocatore" />
-        <v-text-field v-model.number="id_squadra" label="Id Squadra" />
+        <v-select
+          :items="giocatori"
+          item-title="display"
+          item-value="id"
+          v-model="id_giocatore"
+          label="Giocatore"
+          variant="outlined"
+          density="compact"
+          class="mb-4"
+        />
+        <v-select
+          :items="squadre"
+          item-title="nome"
+          item-value="id"
+          v-model="id_squadra"
+          label="Squadra"
+          variant="outlined"
+          density="compact"
+          class="mb-4"
+        />
         <v-text-field v-model="data_inizio" label="Data inizio (YYYY-MM-DD)" />
         <v-text-field v-model="scadenza" label="Scadenza (YYYY-MM-DD)" />
         <v-text-field v-model.number="numero_maglia" label="Numero maglia" type="number" min="0" />
@@ -52,6 +70,8 @@ export default {
       numero_maglia: 0,
       tipo_contratto: 'Definitivo',
       auth: useAuthStore(),
+      giocatori: [],
+      squadre: [],
     }
   },
   computed: {
@@ -80,8 +100,26 @@ export default {
         this.tipo_contratto = 'Definitivo'
       }
     },
+    open(val) {
+      if (val) this.fetchOptions()
+    },
   },
   methods: {
+    async fetchOptions() {
+      try {
+        const [gRes, sRes] = await Promise.all([
+          axios.get((import.meta.env.VITE_API_BASE ?? '') + '/giocatori'),
+          axios.get((import.meta.env.VITE_API_BASE ?? '') + '/squadre'),
+        ])
+        this.giocatori = (gRes.data.data?.giocatori || []).map((g) => ({
+          ...g,
+          display: `${g.cognome} ${g.nome}`,
+        }))
+        this.squadre = sRes.data.data?.squadre || []
+      } catch (e) {
+        console.error('Errore caricamento opzioni contratto', e)
+      }
+    },
     openDialog() {
       if (this.item) {
         this.id_giocatore = this.item.id_giocatore || 0
@@ -98,6 +136,7 @@ export default {
         this.numero_maglia = 0
         this.tipo_contratto = 'Definitivo'
       }
+      this.fetchOptions()
       this.open = true
     },
     async save() {

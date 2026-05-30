@@ -136,7 +136,7 @@ Flight::group('/squadre', function () {
         if (!delete_squadra((int) $id)) {
             Flight::jsonHalt([
                 'status' => 'ko',
-                'message' => 'Errore eliminazione (forse ha giocatori collegati?).',
+                'message' => 'Errore eliminazione.',
             ], 500);
         }
 

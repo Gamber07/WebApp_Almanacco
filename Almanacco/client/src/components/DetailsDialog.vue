@@ -1,10 +1,9 @@
 <template>
-  <v-dialog v-model="open" max-width="700">
+  <div>
     <!-- Dialog generico per mostrare i dettagli in sola lettura. -->
-    <template #activator="{ on, attrs }">
-      <v-btn v-bind="attrs" v-on="on" variant="text" size="small">Dettaglio</v-btn>
-    </template>
+    <v-btn variant="text" size="small" @click="open = true">Dettaglio</v-btn>
 
+    <v-dialog v-model="open" max-width="700">
     <v-card>
       <v-card-title>{{ title }}</v-card-title>
       <v-card-text>
@@ -22,7 +21,8 @@
         <v-btn text @click="open = false">Chiudi</v-btn>
       </v-card-actions>
     </v-card>
-  </v-dialog>
+    </v-dialog>
+  </div>
 </template>
 
 <script>

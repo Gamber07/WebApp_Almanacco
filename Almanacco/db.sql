@@ -14,7 +14,8 @@ CREATE TABLE stagioni (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome_stagione VARCHAR(20) NOT NULL,
     anno_inizio INT NOT NULL,
-    anno_fine INT NOT NULL
+    anno_fine INT NOT NULL,
+    eliminata_il DATETIME NULL DEFAULT NULL
 ) ENGINE=InnoDB;
 
 -- Tabella Squadre
@@ -25,6 +26,7 @@ CREATE TABLE squadre (
     anno_fondazione INT,
     stadio VARCHAR(100) NOT NULL,
     id_squadra_padre INT NULL,
+    eliminata_il DATETIME NULL DEFAULT NULL,
     CHECK (anno_fondazione >= 0),
     FOREIGN KEY (id_squadra_padre) REFERENCES squadre(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
@@ -57,7 +59,8 @@ CREATE TABLE contratti (
 -- Tabella Campionati
 CREATE TABLE campionati (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL
+    nome VARCHAR(100) NOT NULL,
+    eliminato_il DATETIME NULL DEFAULT NULL
 ) ENGINE=InnoDB;
 
 -- Tabella Partite

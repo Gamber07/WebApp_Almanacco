@@ -29,9 +29,9 @@ function get_squadre(string $q = ''): array
 {
     global $pdo;
 
-    $sql = 'SELECT * FROM squadre';
+    $sql = 'SELECT * FROM squadre WHERE eliminata_il IS NULL';
     if ($q !== '') {
-        $sql .= ' WHERE nome LIKE :q_nome OR citta LIKE :q_citta';
+        $sql .= ' AND (nome LIKE :q_nome OR citta LIKE :q_citta)';
     }
     $sql .= ' ORDER BY id DESC';
 
@@ -80,7 +80,7 @@ function delete_squadra(int $id): bool
 {
     global $pdo;
 
-    $stm = $pdo->prepare('DELETE FROM squadre WHERE id = :id');
+    $stm = $pdo->prepare('UPDATE squadre SET eliminata_il = COALESCE(eliminata_il, NOW()) WHERE id = :id');
     return $stm->execute([':id' => $id]);
 }
 
@@ -292,6 +292,11 @@ function get_classifica(int $id_stagione, int $id_campionato): array
 {
     global $pdo;
 
+    $stagione = get_stagione($id_stagione);
+    if ($stagione === null) {
+        return [];
+    }
+
     $sql = 'SELECT s.nome,
             COALESCE(SUM(
                 CASE
@@ -305,6 +310,7 @@ function get_classifica(int $id_stagione, int $id_campionato): array
             LEFT JOIN partite p ON (s.id = p.id_squadra_casa OR s.id = p.id_squadra_trasferta)
                 AND p.id_stagione = :id_stagione
                 AND p.id_campionato = :id_campionato
+            WHERE s.eliminata_il IS NULL OR YEAR(s.eliminata_il) > :anno_inizio
             GROUP BY s.id
             ORDER BY punti DESC, s.nome ASC';
 
@@ -312,23 +318,71 @@ function get_classifica(int $id_stagione, int $id_campionato): array
     $stm->execute([
         ':id_stagione' => $id_stagione,
         ':id_campionato' => $id_campionato,
+        ':anno_inizio' => (int) $stagione['anno_inizio'],
     ]);
 
     return $stm->fetchAll();
 }
 
-function get_campionati(): array
+function get_campionati(bool $includeArchived = false): array
 {
     global $pdo;
 
-    return $pdo->query('SELECT * FROM campionati')->fetchAll();
+    $sql = 'SELECT * FROM campionati';
+    if (!$includeArchived) {
+        $sql .= ' WHERE eliminato_il IS NULL';
+    }
+    $sql .= ' ORDER BY id';
+
+    return $pdo->query($sql)->fetchAll();
+}
+
+function get_campionato(int $id): ?array
+{
+    global $pdo;
+
+    $stm = $pdo->prepare('SELECT * FROM campionati WHERE id = :id');
+    $stm->execute([':id' => $id]);
+    $campionato = $stm->fetch();
+
+    return $campionato === false ? null : $campionato;
+}
+
+function insert_campionato(array $data)
+{
+    global $pdo;
+
+    $sql = 'INSERT INTO campionati (nome)
+            VALUES (:nome)';
+    $ok = $pdo->prepare($sql)->execute($data);
+
+    return $ok ? $pdo->lastInsertId() : false;
+}
+
+function update_campionato(array $data): bool
+{
+    global $pdo;
+
+    $sql = 'UPDATE campionati
+            SET nome = :nome
+            WHERE id = :id';
+
+    return $pdo->prepare($sql)->execute($data);
+}
+
+function delete_campionato(int $id): bool
+{
+    global $pdo;
+
+    $stm = $pdo->prepare('UPDATE campionati SET eliminato_il = COALESCE(eliminato_il, NOW()) WHERE id = :id');
+    return $stm->execute([':id' => $id]);
 }
 
 function get_stagioni(): array
 {
     global $pdo;
 
-    return $pdo->query('SELECT * FROM stagioni ORDER BY anno_inizio DESC')->fetchAll();
+    return $pdo->query('SELECT * FROM stagioni WHERE eliminata_il IS NULL ORDER BY anno_inizio DESC')->fetchAll();
 }
 
 function get_stagione(int $id): ?array
@@ -370,7 +424,7 @@ function delete_stagione(int $id): bool
 {
     global $pdo;
 
-    $stm = $pdo->prepare('DELETE FROM stagioni WHERE id = :id');
+    $stm = $pdo->prepare('UPDATE stagioni SET eliminata_il = COALESCE(eliminata_il, NOW()) WHERE id = :id');
     return $stm->execute([':id' => $id]);
 }
 
